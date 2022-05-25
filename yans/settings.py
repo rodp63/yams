@@ -19,7 +19,18 @@ USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
-LOG_LEVEL = "INFO"
+LOG_LEVEL = "ERROR"
+
+FEED = {
+    "/Users/rodp63/Documents/UCSP-9/FEBT-I/littlebirds/yans/items.json": {
+        "format": "json",
+        "encoding": "utf8",
+        "store_empty": False,
+        "item_export_kwargs": {
+            "export_empty_fields": True,
+        },
+    }
+}
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # CONCURRENT_REQUESTS = 32

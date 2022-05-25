@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: yans
+spec:
+  ttlSecondsAfterFinished: 86400 # 1 day
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: yans
+        image: rodp63/yans:latest
+        imagePullPolicy: Always
+        command: ['yans', 'start']
+        env:
+        - name: YANS_SPIDER
+          value: "diariocorreo"
+        - name: YANS_SINCE
+          value: ""
+        - name: YANS_TO
+          value: ""
+        - name: YANS_KEYWORDS
+          value: "rusia ucrania"

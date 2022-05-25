@@ -1,9 +1,10 @@
 import re
+import os
 import json
 import nltk
-import pandas as pd
+import signal
 
-from scrapy import Request, Spider
+from scrapy import Request, Spider, signals
 from yans.utils import date_range, today
 
 
@@ -15,6 +16,15 @@ class APISpider(Spider):
         "{}/pf/api/v3/content/fetch/story-feed-by-section-and-date-v2?query="
     )
 
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = super(APISpider, cls).from_crawler(crawler, *args, **kwargs)
+        crawler.signals.connect(spider.item_scraped, signal=signals.item_scraped)
+        return spider
+
+    def item_scraped(self, item):
+        os.kill(os.getpid(), signal.SIGUSR1)
+
     def get_tokens(self, text):
         text = re.sub(r"[(),:'\"\.!?]", "", text)
         tokens = [tk.lower() for tk in nltk.tokenize.word_tokenize(text)]
@@ -24,8 +34,7 @@ class APISpider(Spider):
         for a in accents:
             tokens = [tk.replace(a[0], a[1]) for tk in tokens]
 
-        sr = nltk.corpus.stopwords.words("spanish")
-        tokens = [tk for tk in tokens if not tk in sr]
+        tokens = [tk for tk in tokens if not tk in self.stop_words]
         tokens = [self.stemmer.stem(tk) for tk in tokens]
         return tokens
 
@@ -35,7 +44,8 @@ class APISpider(Spider):
             return
 
         self.stemmer = nltk.stem.SnowballStemmer("spanish")
-        self.keywords = [self.stemmer(tk) for tk in self.keywords.split(",")]
+        self.stop_words = nltk.corpus.stopwords.words("spanish")
+        self.keywords = [self.stemmer.stem(tk) for tk in self.keywords.split(",")]
 
         if not self.since:
             self.since = "2015-01-01"

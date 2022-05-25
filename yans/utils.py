@@ -1,8 +1,15 @@
 from datetime import date, datetime, timedelta
 
+from scrapy.settings import Settings
+from scrapy.crawler import CrawlerProcess
+
 
 def str_to_date(str_date):
     return datetime.strptime(str_date, "%Y-%m-%d").date()
+
+
+def date_to_str(datetime_date):
+    return datetime_date.strftime("%Y-%m-%d")
 
 
 def date_range(start_date, end_date, inclusive=False):
@@ -14,3 +21,14 @@ def date_range(start_date, end_date, inclusive=False):
 
 def today(to_str=False):
     return str(date.today()) if to_str else date.today()
+
+
+def days_ago(days, to_str=False):
+    d_ago = date.today() - timedelta(days=days)
+    return str(d_ago) if to_str else d_ago
+
+
+def get_crawler():
+    settings = Settings()
+    settings.setmodule("yans.settings")
+    return CrawlerProcess(settings)
