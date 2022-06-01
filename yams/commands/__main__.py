@@ -15,5 +15,5 @@ def cli():
 commands = ["info", "start"]
 
 for command in commands:
-    module = importlib.import_module("yans.commands.{}".format(command))
-    cli.add_command(module.yans_command, command)
+    module = importlib.import_module("yams.commands.{}".format(command))
+    cli.add_command(module.yams_command, command)

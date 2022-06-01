@@ -3,12 +3,12 @@ REPOSITORY = rodp63
 
 .PHONY: build-image
 build-image:
-	-docker build . --tag $(REPOSITORY)/yans:latest
+	-docker build . --tag $(REPOSITORY)/yams:latest
 
 
 .PHONY: upload-image
 upload-image:
-	-docker push $(REPOSITORY)/yans:latest
+	-docker push $(REPOSITORY)/yams:latest
 
 
 .PHONY: lint
