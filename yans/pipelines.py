@@ -4,12 +4,14 @@
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 
 
+import json
 import os
 
 import redis
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 
+ARC_LISTS = os.getenv("ARC_LISTS", "arc").split(",")
 
 class YamsPipeline(object):
     redis_client = redis.Redis(
@@ -32,12 +34,14 @@ class YamsPipeline(object):
             item_project if not item_subproject else f"{item_project}.{item_subproject}"
         )
 
-        for arc_list in ARC_LISTS_DATA:
+        for arc_list in ARC_LISTS:
             routing_key = f"{arc_list}.{item_source}.{item_media_type}"
             rdb.lpush(routing_key, item)
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
+        adapter["_id"] = item["url"]
+        adapter["source"] = spider.source
         adapter["media_type"] = spider.media_type
 
         self.redis_publish(
