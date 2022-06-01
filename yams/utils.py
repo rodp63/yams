@@ -30,5 +30,5 @@ def days_ago(days, to_str=False):
 
 def get_crawler():
     settings = Settings()
-    settings.setmodule("yans.settings")
+    settings.setmodule("yams.settings")
     return CrawlerProcess(settings)

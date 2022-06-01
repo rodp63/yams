@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: yans
+  name: yams
 spec:
   ttlSecondsAfterFinished: 86400 # 1 day
   backoffLimit: 2
@@ -9,16 +9,16 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-      - name: yans
-        image: rodp63/yans:latest
+      - name: yams
+        image: rodp63/yams:latest
         imagePullPolicy: Always
-        command: ['yans', 'start']
+        command: ['yams', 'start', 'newspaper']
         env:
-        - name: YANS_SPIDER
+        - name: YAMS_NEWSPAPER
           value: "diariocorreo"
-        - name: YANS_SINCE
+        - name: YAMS_NEWSPAPER_SINCE
           value: ""
-        - name: YANS_TO
+        - name: YAMS_NEWSPAPER_TO
           value: ""
-        - name: YANS_KEYWORDS
+        - name: YAMS_NEWSPAPER_KEYWORDS
           value: "rusia ucrania"

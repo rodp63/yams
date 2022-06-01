@@ -5,7 +5,7 @@ import nltk
 import signal
 
 from scrapy import Request, Spider, signals
-from yans.utils import date_range, today
+from yams.utils import date_range, today
 
 
 class APISpider(Spider):

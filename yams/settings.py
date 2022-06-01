@@ -1,4 +1,4 @@
-# Scrapy settings for yans project
+# Scrapy settings for yams project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,10 +7,10 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "yans"
+BOT_NAME = "yams"
 
-SPIDER_MODULES = ["yans.spiders"]
-NEWSPIDER_MODULE = "yans.spiders"
+SPIDER_MODULES = ["yams.spiders"]
+NEWSPIDER_MODULE = "yams.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -22,7 +22,7 @@ ROBOTSTXT_OBEY = False
 LOG_LEVEL = "ERROR"
 
 FEED = {
-    "/Users/rodp63/Documents/UCSP-9/FEBT-I/littlebirds/yans/items.json": {
+    "/Users/rodp63/Documents/UCSP-9/FEBT-I/littlebirds/yams/items.json": {
         "format": "json",
         "encoding": "utf8",
         "store_empty": False,
@@ -58,13 +58,13 @@ FEED = {
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 # SPIDER_MIDDLEWARES = {
-#    'yans.middlewares.YansSpiderMiddleware': 543,
+#    'yams.middlewares.YansSpiderMiddleware': 543,
 # }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 # DOWNLOADER_MIDDLEWARES = {
-#    'yans.middlewares.YansDownloaderMiddleware': 543,
+#    'yams.middlewares.YansDownloaderMiddleware': 543,
 # }
 
 # Enable or disable extensions
@@ -76,7 +76,7 @@ FEED = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 # ITEM_PIPELINES = {
-#    'yans.pipelines.YansPipeline': 300,
+#    'yams.pipelines.YansPipeline': 300,
 # }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
