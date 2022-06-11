@@ -1,17 +1,11 @@
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-
-
 import json
 import os
 
 import redis
-# useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 
 ARC_LISTS = os.getenv("ARC_LISTS", "arc").split(",")
+
 
 class YamsPipeline(object):
     redis_client = redis.Redis(
@@ -41,13 +35,13 @@ class YamsPipeline(object):
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
         adapter["_id"] = item["url"]
-        adapter["source"] = spider.source
+        adapter["source"] = spider.name
         adapter["media_type"] = spider.media_type
 
         self.redis_publish(
             self.redis_client,
             item=json.dumps(adapter.asdict(), ensure_ascii=False, sort_keys=True),
-            item_project=spider.source,
+            item_project=spider.name,
             item_media_type=spider.media_type,
         )
 

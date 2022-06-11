@@ -5,12 +5,12 @@ import signal
 
 import nltk
 from scrapy import Request, Spider, signals
+
 from yams.utils import date_range, today
 
 
 class APISpider(Spider):
     media_type = "newspaper"
-
     since = None
     to = None
     keywords = None
@@ -131,20 +131,17 @@ class APISpider(Spider):
 
 class CorreoSpider(APISpider):
     name = "diariocorreo"
-    source = "diariocorreo"
     allowed_domains = ["diariocorreo.pe"]
     base_url = "https://diariocorreo.pe"
 
 
 class ElComercioSpider(APISpider):
     name = "elcomercio"
-    source = "elcomercio"
     allowed_domains = ["elcomercio.pe"]
     base_url = "https://elcomercio.pe"
 
 
 class Peu21Spider(APISpider):
     name = "peru21"
-    source = "peru21"
     allowed_domains = ["peru21.pe"]
     base_url = "https://peru21.pe"

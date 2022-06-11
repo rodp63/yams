@@ -1,7 +1,7 @@
 from datetime import date, datetime, timedelta
 
-from scrapy.settings import Settings
 from scrapy.crawler import CrawlerProcess
+from scrapy.settings import Settings
 
 
 def str_to_date(str_date):

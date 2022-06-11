@@ -1,9 +1,9 @@
 import os
+
 import click
+
 import yams.info as info
-
 from yams.utils import get_crawler
-
 
 SHORT_HELP = "Display useful information"
 version = "1.0"
