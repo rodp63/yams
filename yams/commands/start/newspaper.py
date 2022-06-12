@@ -1,10 +1,10 @@
-import click
 import signal
-import yams.info as info
 
-from yams.utils import get_crawler, today, days_ago, date_to_str
+import click
 from alive_progress import alive_bar
 
+import yams.info as info
+from yams.utils import date_to_str, days_ago, get_crawler, today
 
 SHORT_HELP = "Start a newspaper crawling process"
 

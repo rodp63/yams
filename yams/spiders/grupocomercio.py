@@ -1,14 +1,16 @@
-import re
-import os
 import json
-import nltk
+import os
+import re
 import signal
 
+import nltk
 from scrapy import Request, Spider, signals
+
 from yams.utils import date_range, today
 
 
 class APISpider(Spider):
+    media_type = "newspaper"
     since = None
     to = None
     keywords = None

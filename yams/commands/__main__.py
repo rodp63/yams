@@ -1,6 +1,6 @@
-import click
 import importlib
 
+import click
 
 __version__ = "0.1"
 CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}

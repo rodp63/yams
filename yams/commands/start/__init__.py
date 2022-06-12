@@ -1,5 +1,6 @@
-import click
 import importlib
+
+import click
 
 
 @click.group(short_help="Start a crawling process")
