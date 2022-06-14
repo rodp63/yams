@@ -9,8 +9,8 @@ ARC_LISTS = os.getenv("ARC_LISTS", "arc").split(",")
 
 class YamsPipeline(object):
     redis_client = redis.Redis(
-        host=os.getenv("REDIS_HOST", "localhost"),
-        port=int(os.getenv("REDIS_PORT", 6379)),
+        host=os.getenv("YAMS_REDIS_HOST", "localhost"),
+        port=int(os.getenv("YAMS_REDIS_PORT", 6379)),
     )
 
     def redis_publish(

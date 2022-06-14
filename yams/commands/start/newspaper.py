@@ -9,7 +9,7 @@ from yams.utils import date_to_str, days_ago, get_crawler, today
 SHORT_HELP = "Start a newspaper crawling process"
 
 
-def print_arguments(source, keywords, since, to):
+def print_arguments(source, keywords, since, to, flags):
     click.secho("Parameters:", bold=True)
     click.secho("  Kind: ", nl=False, bold=True)
     click.echo("Newspaper")
@@ -17,11 +17,14 @@ def print_arguments(source, keywords, since, to):
     click.echo(source)
     click.secho("  Keywords:", bold=True)
     for k in keywords:
-        click.echo(f"  - {k}")
+        click.echo(f"    - {k}")
     click.secho("  Since: ", nl=False, bold=True)
     click.echo(since)
     click.secho("  To: ", nl=False, bold=True)
     click.echo(to)
+    click.secho("  Flags:", bold=True)
+    for f in flags:
+        click.echo(f"    - --{f}")
 
 
 @click.command(short_help=SHORT_HELP)
@@ -50,11 +53,24 @@ def print_arguments(source, keywords, since, to):
     envvar=info.news["env"]["to"]["value"],
     help="Set the upper date of the posts to retrieve",
 )
-def yams_command(source, keyword, since, to):
+@click.option(
+    "--exact-match",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Look for the exact match of the keywords",
+)
+def yams_command(source, keyword, since, to, exact_match):
     crawler = get_crawler()
     since, to = date_to_str(since), date_to_str(to)
-    print_arguments(source, keyword, since, to)
-    crawler.crawl(source, since=since, to=to, keywords=",".join(keyword))
+    flags = []
+    if exact_match:
+        flags.append("exact-match")
+
+    print_arguments(source, keyword, since, to, flags)
+    crawler.crawl(
+        source, since=since, to=to, keywords=",".join(keyword), flags=",".join(flags)
+    )
 
     with alive_bar(
         spinner=None,
