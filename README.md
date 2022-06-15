@@ -21,14 +21,14 @@ Commands:
 $ python setup.py install
 ```
 
-## Deployment 
+## Deployment
 
 ```bash
 $ make build-image
 $ make upload-image
 ```
 
-## Formatting 
+## Formatting
 
 ```bash
 $ make lint

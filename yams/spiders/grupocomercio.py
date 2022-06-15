@@ -6,14 +6,15 @@ import signal
 import nltk
 from scrapy import Request, Spider, signals
 
-from yams.utils import date_range, today
+from yams.utils import date_range
 
 
 class APISpider(Spider):
     media_type = "newspaper"
     since = None
     to = None
-    keywords = None
+    keywords = ""
+    flags = ""
     pagination_url = (
         "{}/pf/api/v3/content/fetch/story-feed-by-section-and-date-v2?query="
     )
@@ -28,33 +29,35 @@ class APISpider(Spider):
         os.kill(os.getpid(), signal.SIGUSR1)
 
     def get_tokens(self, text):
-        text = re.sub(r"[(),:'\"\.!?]", "", text)
-        tokens = [tk.lower() for tk in nltk.tokenize.word_tokenize(text)]
-        tokens = [tk for tk in tokens if tk.isalpha()]
+        text = re.sub(r"[(),:'\"\.!?]", " ", text)
+        tokens = nltk.tokenize.word_tokenize(text)
+        tokens = [tk.lower() for tk in tokens if tk.isalpha()]
+        tokens = [tk for tk in tokens if tk not in self.stop_words]
 
         accents = [("á", "a"), ("é", "e"), ("í", "i"), ("ó", "o"), ("ú", "u")]
         for a in accents:
             tokens = [tk.replace(a[0], a[1]) for tk in tokens]
 
-        tokens = [tk for tk in tokens if not tk in self.stop_words]
         tokens = [self.stemmer.stem(tk) for tk in tokens]
         return tokens
 
-    def start_requests(self):
-        if not self.keywords:
-            self.logger.error("You must define the keywords, terminating...")
-            return
+    def set_flags(self):
+        self.flags = self.flags.split(",")
+        self.exact_match = "exact-match" in self.flags
 
+    def start_requests(self):
         self.stemmer = nltk.stem.SnowballStemmer("spanish")
         self.stop_words = nltk.corpus.stopwords.words("spanish")
-        self.keywords = [self.stemmer.stem(tk) for tk in self.keywords.split(",")]
-
-        if not self.since:
-            self.since = "2015-01-01"
-        if not self.to:
-            self.to = today(to_str=True)
-
         self.pagination_url = self.pagination_url.format(self.base_url)
+
+        self.set_flags()
+        self.keywords = list(
+            set(
+                self.keywords.split(",")
+                if self.exact_match
+                else self.get_tokens(self.keywords)
+            )
+        )
 
         for day in date_range(self.since, self.to):
             query_data = {"date": str(day), "from": "0", "size": "100"}
@@ -65,11 +68,12 @@ class APISpider(Spider):
             )
 
     def contains_keywords(self, text):
-        tokens = self.get_tokens(text)
+        pool = text if self.exact_match else self.get_tokens(text)
+        results = []
         for tk in self.keywords:
-            if tk in tokens:
-                return True
-        return False
+            if tk in pool:
+                results.append(tk)
+        return results
 
     def parse_post(self, response):
         def get_from_css(statement):
@@ -96,6 +100,9 @@ class APISpider(Spider):
             or get_from_css(".story-content__font--secondary ::text")
         )
 
+        keyword_field = "exact_keywords" if self.exact_match else "stemmed_keywords"
+        item[keyword_field] = response.meta.get("keywords")
+
         yield item
 
     def parse_pagination(self, response):
@@ -105,7 +112,8 @@ class APISpider(Spider):
         for post in posts:
             header = post["headlines"]["basic"]
             subheader = post["subheadlines"]["basic"]
-            if self.contains_keywords(header + " " + subheader):
+            k = self.contains_keywords(header + " " + subheader)
+            if len(k) > 0:
                 try:
                     url = self.base_url + post["websites"][self.name]["website_url"]
                 except:
@@ -113,7 +121,7 @@ class APISpider(Spider):
                 yield Request(
                     url,
                     callback=self.parse_post,
-                    meta={"day": response.meta["day"]},
+                    meta={"day": response.meta["day"], "keywords": k},
                 )
 
         if "next" in parsed_response:

@@ -14,6 +14,10 @@ spec:
         imagePullPolicy: Always
         command: ['yams', 'start', 'newspaper']
         env:
+        - name: YAMS_REDIS_HOST
+          value: redis
+        - name: YAMS_REDIS_PORT
+          value: "6379"
         - name: YAMS_NEWSPAPER
           value: "diariocorreo"
         - name: YAMS_NEWSPAPER_SINCE
