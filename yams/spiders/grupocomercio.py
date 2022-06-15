@@ -69,10 +69,11 @@ class APISpider(Spider):
 
     def contains_keywords(self, text):
         pool = text if self.exact_match else self.get_tokens(text)
+        results = []
         for tk in self.keywords:
             if tk in pool:
-                return True
-        return False
+                results.append(tk)
+        return results
 
     def parse_post(self, response):
         def get_from_css(statement):
@@ -100,7 +101,7 @@ class APISpider(Spider):
         )
 
         keyword_field = "exact_keywords" if self.exact_match else "stemmed_keywords"
-        item[keyword_field] = self.keywords
+        item[keyword_field] = response.meta.get("keywords")
 
         yield item
 
@@ -111,7 +112,8 @@ class APISpider(Spider):
         for post in posts:
             header = post["headlines"]["basic"]
             subheader = post["subheadlines"]["basic"]
-            if self.contains_keywords(header + " " + subheader):
+            k = self.contains_keywords(header + " " + subheader)
+            if len(k) > 0:
                 try:
                     url = self.base_url + post["websites"][self.name]["website_url"]
                 except:
@@ -119,7 +121,7 @@ class APISpider(Spider):
                 yield Request(
                     url,
                     callback=self.parse_post,
-                    meta={"day": response.meta["day"]},
+                    meta={"day": response.meta["day"], "keywords": k},
                 )
 
         if "next" in parsed_response:
