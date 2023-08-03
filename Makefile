@@ -13,5 +13,5 @@ upload-image:
 
 .PHONY: lint
 lint:
-	-black .
 	-isort .
+	-black .

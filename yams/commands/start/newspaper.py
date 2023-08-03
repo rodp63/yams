@@ -1,3 +1,4 @@
+import os
 import signal
 
 import click
@@ -9,12 +10,14 @@ from yams.utils import date_to_str, days_ago, get_crawler, today
 SHORT_HELP = "Start a newspaper crawling process"
 
 
-def print_arguments(source, keywords, since, to, flags):
+def print_arguments(source, keywords, output, since, to, flags):
     click.secho("Parameters:", bold=True)
     click.secho("  Kind: ", nl=False, bold=True)
     click.echo("Newspaper")
     click.secho("  Source: ", nl=False, bold=True)
     click.echo(source)
+    click.secho("  Output: ", nl=False, bold=True)
+    click.echo(output)
     click.secho("  Keywords:", bold=True)
     for k in keywords:
         click.echo(f"    - {k}")
@@ -36,6 +39,13 @@ def print_arguments(source, keywords, since, to, flags):
     required=True,
     envvar=info.news["env"]["keywords"]["value"],
     help="Set one keyword for post retrieval",
+)
+@click.option(
+    "--output",
+    "-o",
+    envvar=info.news["env"]["output"]["value"],
+    type=click.Path(file_okay=True, dir_okay=False),
+    help="Save output to json FILE instead of stdout",
 )
 @click.option(
     "--since",
@@ -60,14 +70,18 @@ def print_arguments(source, keywords, since, to, flags):
     show_default=True,
     help="Look for the exact match of the keywords",
 )
-def yams_command(source, keyword, since, to, exact_match):
+def yams_command(source, keyword, output, since, to, exact_match):
     crawler = get_crawler()
     since, to = date_to_str(since), date_to_str(to)
     flags = []
     if exact_match:
         flags.append("exact-match")
+    if not output:
+        output = "stdout"
+    else:
+        os.environ.update({info.news["env"]["output"]["value"]: output})
 
-    print_arguments(source, keyword, since, to, flags)
+    print_arguments(source, keyword, output, since, to, flags)
     crawler.crawl(
         source, since=since, to=to, keywords=",".join(keyword), flags=",".join(flags)
     )

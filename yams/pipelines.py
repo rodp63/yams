@@ -1,48 +1,27 @@
 import json
 import os
 
-import redis
 from itemadapter import ItemAdapter
 
-ARC_LISTS = os.getenv("ARC_LISTS", "arc").split(",")
+import yams.info as info
 
 
 class YamsPipeline(object):
-    redis_client = redis.Redis(
-        host=os.getenv("YAMS_REDIS_HOST", "localhost"),
-        port=int(os.getenv("YAMS_REDIS_PORT", 6379)),
-    )
+    def open_spider(self, spider):
+        filename = os.environ.get(info.news["env"]["output"]["value"])
+        self.out_type = "stdout"
+        if filename:
+            self.outfile = open(filename, "w")
+            self.out_type = "file"
 
-    def redis_publish(
-        self,
-        rdb,
-        item,
-        item_project,
-        item_media_type,
-        item_subproject=None,
-    ):
-        item_project = item_project.replace(".", "-")
-        item_subproject = item_subproject.replace(".", "-") if item_subproject else None
-
-        item_source = (
-            item_project if not item_subproject else f"{item_project}.{item_subproject}"
-        )
-
-        for arc_list in ARC_LISTS:
-            routing_key = f"{arc_list}.{item_source}.{item_media_type}"
-            rdb.lpush(routing_key, item)
+    def close_spider(self, spider):
+        if self.out_type == "file":
+            self.outfile.close()
 
     def process_item(self, item, spider):
-        adapter = ItemAdapter(item)
-        adapter["_id"] = item["url"]
-        adapter["source"] = spider.name
-        adapter["media_type"] = spider.media_type
-
-        self.redis_publish(
-            self.redis_client,
-            item=json.dumps(adapter.asdict(), ensure_ascii=False, sort_keys=True),
-            item_project=spider.name,
-            item_media_type=spider.media_type,
-        )
-
+        out_item = json.dumps(ItemAdapter(item).asdict(), indent=2)
+        if self.out_type == "file":
+            self.file.write(out_item + "\n")
+        else:
+            print(out_item)
         return item

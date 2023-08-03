@@ -2,4 +2,3 @@ nltk
 scrapy
 click
 alive-progress
-redis
