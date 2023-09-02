@@ -11,17 +11,19 @@ class YamsPipeline(object):
         filename = os.environ.get(info.news["env"]["output"]["value"])
         self.out_type = "stdout"
         if filename:
-            self.outfile = open(filename, "w")
             self.out_type = "file"
+            self.filename = filename
+            self.data = []
 
     def close_spider(self, spider):
         if self.out_type == "file":
-            self.outfile.close()
+            with open(self.filename, "w", encoding="utf-8") as fd:
+                json.dump(self.data, fd, indent=2)
 
     def process_item(self, item, spider):
-        out_item = json.dumps(ItemAdapter(item).asdict(), indent=2)
+        out_item = ItemAdapter(item).asdict()
         if self.out_type == "file":
-            self.file.write(out_item + "\n")
+            self.data.append(out_item)
         else:
             print(out_item)
         return item

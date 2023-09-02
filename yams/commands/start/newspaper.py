@@ -28,6 +28,7 @@ def print_arguments(source, keywords, output, since, to, flags):
     click.secho("  Flags:", bold=True)
     for f in flags:
         click.echo(f"    - --{f}")
+    click.echo("\n")
 
 
 @click.command(short_help=SHORT_HELP)
@@ -79,6 +80,8 @@ def yams_command(source, keyword, output, since, to, exact_match):
     if not output:
         output = "stdout"
     else:
+        if not output.endswith(".json"):
+            output += ".json"
         os.environ.update({info.news["env"]["output"]["value"]: output})
 
     print_arguments(source, keyword, output, since, to, flags)
