@@ -3,6 +3,8 @@ from datetime import date, datetime, timedelta
 from scrapy.crawler import CrawlerProcess
 from scrapy.settings import Settings
 
+_bar = None
+
 
 def str_to_date(str_date):
     return datetime.strptime(str_date, "%Y-%m-%d").date()
@@ -32,3 +34,17 @@ def get_crawler():
     settings = Settings()
     settings.setmodule("yams.settings")
     return CrawlerProcess(settings)
+
+
+def init_bar(bar):
+    global _bar
+    _bar = bar
+
+
+def remove_bar():
+    global _bar
+    _bar = None
+
+
+def get_bar():
+    return _bar

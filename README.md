@@ -21,7 +21,7 @@ Commands:
 $ python setup.py install
 ```
 
-# Examples
+## Examples
 
 ```bash
 $ yams start newspaper --help 
@@ -37,8 +37,8 @@ Options:
 
 # Get all the posts containing the word 'peru' in the last month (by default).
 $ yams start newspaper elcomercio -k peru
-# Get all the post containing the exact word 'congreso' between two dates and save it in a file.
-$ yams start newspaper elcomercio -k congreso -s '2023-01-01' -t '2023-06-30' -o output.json --exact-match
+# Get all the post containing the exact word 'congreso' between two dates and save it in a json file.
+$ yams start newspaper elcomercio -k congreso -s '2023-01-01' -t '2023-06-30' -o data --exact-match
 ```
 
 ## Deployment

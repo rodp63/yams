@@ -4,12 +4,14 @@ import os
 from itemadapter import ItemAdapter
 
 import yams.info as info
+from yams.utils import get_bar
 
 
 class YamsPipeline(object):
     def open_spider(self, spider):
         filename = os.environ.get(info.news["env"]["output"]["value"])
         self.out_type = "stdout"
+        self.bar = get_bar()
         if filename:
             self.out_type = "file"
             self.filename = filename
@@ -26,4 +28,5 @@ class YamsPipeline(object):
             self.data.append(out_item)
         else:
             print(out_item)
+        self.bar()
         return item

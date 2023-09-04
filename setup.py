@@ -10,4 +10,5 @@ setup(
             "yams=yams.commands.__main__:cli",
         ],
     },
+    install_requires=["nltk>=3.5", "scrapy>=2.6", "click>=8.1", "alive-progress>=2.4"],
 )

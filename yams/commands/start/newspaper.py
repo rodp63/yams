@@ -1,11 +1,10 @@
 import os
-import signal
 
 import click
 from alive_progress import alive_bar
 
 import yams.info as info
-from yams.utils import date_to_str, days_ago, get_crawler, today
+from yams.utils import date_to_str, days_ago, get_crawler, init_bar, remove_bar, today
 
 SHORT_HELP = "Start a newspaper crawling process"
 
@@ -85,9 +84,6 @@ def yams_command(source, keyword, output, since, to, exact_match):
         os.environ.update({info.news["env"]["output"]["value"]: output})
 
     print_arguments(source, keyword, output, since, to, flags)
-    crawler.crawl(
-        source, since=since, to=to, keywords=",".join(keyword), flags=",".join(flags)
-    )
 
     with alive_bar(
         spinner=None,
@@ -95,12 +91,17 @@ def yams_command(source, keyword, output, since, to, exact_match):
         length=10,
         monitor="{count} items",
         title="Crawling in progress",
+        enrich_print=False,
     ) as bar:
-
-        def sig_handler(sig, frame):
-            bar()
-
-        signal.signal(signal.SIGUSR1, sig_handler)
+        init_bar(bar)
+        crawler.crawl(
+            source,
+            since=since,
+            to=to,
+            keywords=",".join(keyword),
+            flags=",".join(flags),
+        )
         crawler.start()
+        remove_bar()
 
     click.echo("Crawling finished")
