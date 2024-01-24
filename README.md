@@ -5,19 +5,19 @@
 This project aims to provide a seamless access to news and media information.
 A simple Python scraper to collect posts from the most popular Peruvian news websites (for now):
 
-- [x] El Correo: [https://diariocorreo.pe/](https://diariocorreo.pe/).
-- [x] El Comercio: [https://elcomercio.pe/](https://elcomercio.pe/).
-- [x] Perú 21: [https://peru21.pe/](https://peru21.pe/).
-- [ ] Gestión: [https://gestion.pe/](https://gestion.pe/).
-- [ ] La República: [https://larepublica.pe/](https://larepublica.pe/).
-- [ ] CNN News: [https://edition.cnn.com/](https://edition.cnn.com/).
-- [ ] BBC News: [https://www.bbc.com/](https://www.bbc.com/).
+- [x] **El Correo: [https://diariocorreo.pe/](https://diariocorreo.pe/)**.
+- [x] **El Comercio: [https://elcomercio.pe/](https://elcomercio.pe/)**.
+- [x] **Perú 21: [https://peru21.pe/](https://peru21.pe/)**.
+- [ ] _Gestión: [https://gestion.pe/](https://gestion.pe/)_.
+- [ ] _La República: [https://larepublica.pe/](https://larepublica.pe/)_.
+- [ ] _CNN News: [https://edition.cnn.com/](https://edition.cnn.com/)_.
+- [ ] _BBC News: [https://www.bbc.com/](https://www.bbc.com/)_.
 
 ## Installation
 
 Standard installation via `pip`:
 ```zsh
-$ pip install yams
+$ pip install cli-yams
 ```
 
 Or, you can install it manually:
