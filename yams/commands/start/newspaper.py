@@ -9,6 +9,17 @@ from yams.utils import date_to_str, days_ago, get_crawler, init_bar, remove_bar,
 SHORT_HELP = "Start a newspaper crawling process"
 
 
+def start_crawling(crawler, source, since, to, keyword, flags):
+    crawler.crawl(
+        source,
+        since=since,
+        to=to,
+        keywords=",".join(keyword),
+        flags=",".join(flags),
+    )
+    crawler.start()
+
+
 def print_arguments(source, keywords, output, since, to, flags):
     click.secho("Parameters:", bold=True)
     click.secho("  Kind: ", nl=False, bold=True)
@@ -70,7 +81,14 @@ def print_arguments(source, keywords, output, since, to, flags):
     show_default=True,
     help="Look for the exact match of the keywords",
 )
-def yams_command(source, keyword, output, since, to, exact_match):
+@click.option(
+    "--verbose",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Display detailed information about the task",
+)
+def yams_command(source, keyword, output, since, to, exact_match, verbose):
     crawler = get_crawler()
     since, to = date_to_str(since), date_to_str(to)
     flags = []
@@ -83,25 +101,19 @@ def yams_command(source, keyword, output, since, to, exact_match):
             output += ".json"
         os.environ.update({info.news["env"]["output"]["value"]: output})
 
-    print_arguments(source, keyword, output, since, to, flags)
-
-    with alive_bar(
-        spinner=None,
-        unknown="waves",
-        length=10,
-        monitor="{count} items",
-        title="Crawling in progress",
-        enrich_print=False,
-    ) as bar:
-        init_bar(bar)
-        crawler.crawl(
-            source,
-            since=since,
-            to=to,
-            keywords=",".join(keyword),
-            flags=",".join(flags),
-        )
-        crawler.start()
-        remove_bar()
-
-    click.echo("Crawling finished")
+    if verbose:
+        print_arguments(source, keyword, output, since, to, flags)
+        with alive_bar(
+            spinner=None,
+            unknown="waves",
+            length=10,
+            monitor="{count} items",
+            title="Crawling in progress",
+            enrich_print=False,
+        ) as bar:
+            init_bar(bar)
+            start_crawling(crawler, source, since, to, keyword, flags)
+            remove_bar()
+        click.echo("Crawling finished")
+    else:
+        start_crawling(crawler, source, since, to, keyword, flags)

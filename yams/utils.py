@@ -47,4 +47,4 @@ def remove_bar():
 
 
 def get_bar():
-    return _bar
+    return _bar or (lambda: None)

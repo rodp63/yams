@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>The Hidden Wiki</title>
+  </head>
+  <body>
+    <h1>Welcome to the Hidden Wiki</h1>
+    <form action="{% url 'search' %}"  method="get">
+      <input type="text" name="query" placeholder="Search.." value="{{ query }}">
+      <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+    <h2>Results</h2>
+    {% for post  in posts  %}
+       <div id="post"> 
+        <a href="{{ post.url }}">{{ post.title }}</a>
+        <b>{{ post.date }}</b>
+        <p>{{ post.summary }} </p>
+      </div>
+    {% endfor %}
+  </body>
+</html>

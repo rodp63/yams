@@ -15,3 +15,13 @@ upload-image:
 lint:
 	-isort .
 	-black .
+
+.PHONY: run-app
+run-app:
+	-python app/manage.py runserver
+
+
+.PHONY: migrate
+migrate:
+	-python app/manage.py makemigrations
+	-python app/manage.py migrate
