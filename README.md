@@ -39,7 +39,7 @@ We can define the date range to extract the information by using the `-s` and `-
 Let's get all the post from _Perú 21_ containing the keyword `"congreso"` from the last half of the year 2023.
 
 ```zsh
-$ yams start newspaper peru21 -k congreso -s '2023-07-01' -t '2023-12-31'
+$ yams start newspaper peru21 -k congreso -s "2023-07-01" -t "2023-12-31"
 ```
 
 As you may notice, the output is printed on the screen by default.
